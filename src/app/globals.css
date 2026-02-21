@@ -1,0 +1,130 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Playfair+Display:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #F6F3EE;
+  --foreground: #4A3F35;
+  --sand: #E8DCCB;
+  --earth: #4A3F35;
+  --cream: #F6F3EE;
+  --emerald: #1F5E50;
+  --terracotta: #B85C38;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #2C2622;
+    --foreground: #F6F3EE;
+    --sand: #3D3530;
+    --earth: #E8DCCB;
+    --cream: #F6F3EE;
+    --emerald: #2A7A6A;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+@layer components {
+  .btn-primary {
+    @apply bg-primary text-white h-12 px-8 rounded-button font-medium transition-all duration-300 hover:bg-primary-dark hover:shadow-elevated disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-card active:scale-[0.98];
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white h-12 px-8 rounded-button font-medium transition-all duration-300 hover:bg-secondary-dark hover:shadow-elevated disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-card active:scale-[0.98];
+  }
+
+  .btn-ghost {
+    @apply text-earth font-medium transition-all duration-300 hover:bg-earth/5 rounded-button px-6 py-3 disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98];
+  }
+
+  .input-field {
+    @apply h-12 px-5 border border-earth/15 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all duration-200 w-full bg-white/80 text-earth/50 placeholder:text-earth/50 dark:bg-charcoal dark:text-cream/50 dark:border-earth/20 dark:placeholder:text-cream/50;
+  }
+
+  .card {
+    @apply bg-white rounded-card shadow-card overflow-hidden transition-all duration-300;
+  }
+
+  .card-hover:hover {
+    @apply shadow-elevated -translate-y-1;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+
+  .badge-verified {
+    @apply badge bg-emerald/10 text-emerald border border-emerald/20;
+  }
+
+  .badge-premium {
+    @apply badge bg-terracotta/10 text-terracotta border border-terracotta/20;
+  }
+
+  .badge-pending {
+    @apply badge bg-sand text-earth/70;
+  }
+
+  .badge-active {
+    @apply badge bg-emerald/10 text-emerald;
+  }
+
+  .section-spacing {
+    @apply py-16 md:py-24;
+  }
+
+  .container-soft {
+    @apply max-w-7xl mx-auto px-6;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-earth to-earth/70 bg-clip-text text-transparent;
+  }
+}
+
+/* Subtle texture overlay */
+.texture-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  z-index: 9999;
+}
