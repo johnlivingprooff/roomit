@@ -76,35 +76,34 @@ export function Header() {
               {link.label}
             </Link>
           ))}
-          {user?.role === 'admin' && (
+          {user?.role === 'renter' && (
             <Link
-              href="/admin"
-              className={`text-sm font-medium transition-colors ${pathname === '/admin'
-                ? 'text-primary'
-                : 'text-earth/60 hover:text-earth'
-                }`}
+              href="/dashboard/host"
+              className="text-sm font-medium text-emerald hover:text-emerald-dark transition-colors"
             >
-              Admin
+              Become a Host
             </Link>
           )}
         </nav>
 
         <div className="flex items-center gap-3">
           {user ? (
-            <div className="hidden md:flex items-center gap-3">
-              <Link href="/subscribe">
-                <Button variant="ghost" size="sm" className="text-earth">
-                  {user.role === 'host' ? 'Premium' : 'Subscribe'}
-                </Button>
+            <div className="hidden md:flex items-center gap-4">
+              <Link href="/subscribe" className="text-sm font-medium text-earth/60 hover:text-earth transition-colors">
+                {user.role === 'host' ? 'Premium Tools' : 'Upgrade Plan'}
               </Link>
-              <Link href={user.role === 'host' ? '/dashboard/host' : '/dashboard/renter'}>
-                <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-primary" />
+              <div className="h-4 w-px bg-earth/10" />
+              <Link href={user.role === 'host' ? '/dashboard/host' : '/dashboard/renter'} className="flex items-center gap-2 group">
+                <span className="text-sm font-medium text-earth group-hover:text-primary transition-colors">
+                  {user.name || 'Account'}
+                </span>
+                <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                  <User className="w-4 h-4 text-primary" />
                 </div>
               </Link>
               <button
                 onClick={handleLogout}
-                className="p-2 text-earth/60 hover:text-earth transition-colors"
+                className="p-2 text-earth/40 hover:text-accent transition-colors"
                 title="Log out"
               >
                 <LogOut className="w-5 h-5" />

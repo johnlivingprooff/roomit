@@ -3,14 +3,17 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Phone, ArrowRight } from 'lucide-react';
+import { Phone, ArrowRight, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { useAuthStore } from '@/lib/auth-store';
 
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isSignup = searchParams.get('signup') === 'true';
+
+  const { setUser } = useAuthStore();
 
   const [step, setStep] = useState<'phone' | 'otp'>('phone');
   const [phone, setPhone] = useState('');
@@ -18,27 +21,77 @@ function LoginContent() {
   const [name, setName] = useState('');
   const [role, setRole] = useState<'renter' | 'host'>('renter');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'send-otp',
+          phone,
+          name: isSignup ? name : undefined,
+          role: isSignup ? role : undefined,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        setError(data.error || 'Failed to send OTP');
+      } else {
+        setStep('otp');
+      }
+    } catch (err) {
+      setError('Something went wrong. Try again.');
+    } finally {
       setIsLoading(false);
-      setStep('otp');
-    }, 1500);
+    }
   };
 
   const handleVerifyOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      if (isSignup) {
-        router.push('/subscribe');
+    setError('');
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'verify-otp',
+          phone,
+          otp,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!data.success) {
+        setError(data.error || 'Invalid OTP');
       } else {
-        router.push('/search');
+        // Store user in zustand store (persisted)
+        setUser(data.user);
+
+        // Redirect based on role
+        if (data.user.role === 'host') {
+          router.push('/dashboard/host');
+        } else if (data.user.role === 'admin') {
+          router.push('/admin');
+        } else {
+          router.push('/dashboard/renter');
+        }
       }
-    }, 1500);
+    } catch (err) {
+      setError('Something went wrong. Try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,10 +99,10 @@ function LoginContent() {
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <Link href="/" className="inline-flex items-center gap-3">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
+            <div className="w-12 h-12 bg-emerald rounded-xl flex items-center justify-center">
               <Phone className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-serif font-medium text-earth">Roomie</span>
+            <span className="text-2xl font-serif font-medium text-earth">RoomIt</span>
           </Link>
           <h1 className="mt-8 text-3xl font-serif font-medium text-earth">
             {isSignup ? 'Create Your Account' : 'Welcome Back'}
@@ -63,6 +116,13 @@ function LoginContent() {
         </div>
 
         <div className="bg-white rounded-card shadow-soft p-8">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-600">{error}</p>
+            </div>
+          )}
+
           {step === 'phone' ? (
             <form onSubmit={handleSendOTP} className="space-y-6">
               {isSignup && (
@@ -81,7 +141,7 @@ function LoginContent() {
                         type="button"
                         onClick={() => setRole('renter')}
                         className={`p-4 rounded-xl border-2 transition-all ${role === 'renter'
-                          ? 'border-primary bg-primary/5'
+                          ? 'border-emerald bg-emerald/5'
                           : 'border-earth/10 hover:border-earth/20'
                           }`}
                       >
@@ -92,7 +152,7 @@ function LoginContent() {
                         type="button"
                         onClick={() => setRole('host')}
                         className={`p-4 rounded-xl border-2 transition-all ${role === 'host'
-                          ? 'border-primary bg-primary/5'
+                          ? 'border-emerald bg-emerald/5'
                           : 'border-earth/10 hover:border-earth/20'
                           }`}
                       >
@@ -146,9 +206,9 @@ function LoginContent() {
 
         <p className="mt-8 text-center text-sm text-earth/70">
           By continuing, you agree to our{' '}
-          <a href="#" className="text-primary hover:underline">Terms</a>
+          <a href="#" className="text-emerald hover:underline">Terms</a>
           {' '}and{' '}
-          <a href="#" className="text-primary hover:underline">Privacy Policy</a>
+          <a href="#" className="text-emerald hover:underline">Privacy Policy</a>
         </p>
       </div>
     </div>
@@ -161,12 +221,12 @@ export default function LoginPage() {
       <div className="min-h-screen bg-cream flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-10">
-            <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center mx-auto">
+            <div className="w-12 h-12 bg-emerald rounded-xl flex items-center justify-center mx-auto">
               <Phone className="w-6 h-6 text-white" />
             </div>
           </div>
           <div className="bg-white rounded-card shadow-soft p-8 flex justify-center">
-            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full"></div>
+            <div className="animate-spin w-8 h-8 border-2 border-emerald border-t-transparent rounded-full"></div>
           </div>
         </div>
       </div>

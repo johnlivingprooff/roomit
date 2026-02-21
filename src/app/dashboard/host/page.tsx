@@ -3,14 +3,15 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import {
-  Home, Plus, Calendar, MessageSquare, TrendingUp,
-  Eye, DollarSign, Star, MoreVertical, Check, X
+  Home, Plus, Calendar, MessageSquare,
+  Eye, DollarSign, Star, MoreVertical,
+  Check, X, Shield
 } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { useAuthStore } from '@/lib/auth-store';
 
-// Mock data
 const mockListings = [
   {
     id: '1',
@@ -47,16 +48,6 @@ const mockBookings = [
     price: 45000,
     listing_title: 'Cozy Room in Lilongwe',
   },
-  {
-    id: '2',
-    listing_id: '1',
-    renter_name: 'Bob K.',
-    start_date: '2024-01-15',
-    end_date: '2024-01-31',
-    status: 'accepted',
-    price: 22500,
-    listing_title: 'Cozy Room in Lilongwe',
-  },
 ];
 
 const stats = [
@@ -67,6 +58,7 @@ const stats = [
 ];
 
 export default function HostDashboard() {
+  const { user } = useAuthStore();
   const [activeTab, setActiveTab] = useState<'listings' | 'bookings'>('listings');
 
   const formatPrice = (price: number) => {
@@ -81,33 +73,50 @@ export default function HostDashboard() {
     <div className="min-h-screen bg-cream">
       <Header />
 
-      <main className="pt-20 pb-12">
+      <main className="pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-4">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          {/* Welcome Header */}
+          <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-10">
             <div>
-              <h1 className="text-2xl font-bold text-earth dark:text-cream">Host Dashboard</h1>
-              <p className="text-earth/60 dark:text-cream/60">Manage your listings and bookings</p>
+              <h1 className="text-3xl font-serif font-medium text-earth">
+                Welcome back, {user?.name?.split(' ')[0] || 'Host'}
+              </h1>
+              <p className="text-earth/60 mt-1">Manage your properties and maximize your earnings.</p>
             </div>
-            <Link href="/listing/create">
-              <Button>
-                <Plus className="w-5 h-5 mr-2" />
-                Add Listing
-              </Button>
-            </Link>
+
+            <div className="flex items-center gap-3">
+              <div className="bg-white rounded-2xl p-4 shadow-soft border border-earth/5 flex items-center gap-4 min-w-[240px]">
+                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-primary" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-earth">ID Verification</p>
+                  <span className="text-xs text-earth/50">{user?.verified_status === 'verified' ? 'Fully Verified' : 'Action Required'}</span>
+                </div>
+                <Button variant="ghost" size="sm" className="ml-auto text-primary">
+                  Details
+                </Button>
+              </div>
+              <Link href="/listing/create">
+                <Button className="h-full px-6 bg-earth text-white border-earth hover:bg-earth/90">
+                  <Plus className="w-5 h-5 mr-2" />
+                  Add Listing
+                </Button>
+              </Link>
+            </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          {/* Stats Bar */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
             {stats.map((stat) => (
-              <div key={stat.label} className="bg-white dark:bg-charcoal border border-earth/5 dark:border-earth/20 rounded-card shadow-card p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <stat.icon className="w-5 h-5 text-primary" />
+              <div key={stat.label} className="bg-white rounded-2xl border border-earth/5 shadow-soft p-6 group hover:border-primary/20 transition-all">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-sand/30 rounded-xl flex items-center justify-center group-hover:bg-primary/5 transition-colors">
+                    <stat.icon className="w-6 h-6 text-earth group-hover:text-primary transition-colors" />
                   </div>
                   <div>
-                    <p className="text-2xl font-bold text-earth dark:text-cream">{stat.value}</p>
-                    <p className="text-sm text-earth/60 dark:text-cream/60">{stat.label}</p>
+                    <p className="text-2xl font-serif font-medium text-earth">{stat.value}</p>
+                    <p className="text-sm text-earth/40">{stat.label}</p>
                   </div>
                 </div>
               </div>
@@ -115,71 +124,75 @@ export default function HostDashboard() {
           </div>
 
           {/* Tabs */}
-          <div className="border-b border-earth/10 mb-6">
-            <div className="flex gap-8">
-              <button
-                onClick={() => setActiveTab('listings')}
-                className={`pb-3 font-medium transition-colors ${activeTab === 'listings'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-earth/50 dark:text-cream/50 hover:text-earth dark:hover:text-cream'
-                  }`}
-              >
-                My Listings
-              </button>
-              <button
-                onClick={() => setActiveTab('bookings')}
-                className={`pb-3 font-medium transition-colors ${activeTab === 'bookings'
-                  ? 'text-primary border-b-2 border-primary'
-                  : 'text-earth/50 dark:text-cream/50 hover:text-earth dark:hover:text-cream'
-                  }`}
-              >
-                Booking Requests
-              </button>
-            </div>
+          <div className="flex gap-8 border-b border-earth/10 mb-8 overflow-x-auto">
+            <button
+              onClick={() => setActiveTab('listings')}
+              className={`pb-4 text-sm font-medium transition-all relative whitespace-nowrap ${activeTab === 'listings'
+                ? 'text-primary'
+                : 'text-earth/40 hover:text-earth/60'
+                }`}
+            >
+              My Listings
+              {activeTab === 'listings' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+              )}
+            </button>
+            <button
+              onClick={() => setActiveTab('bookings')}
+              className={`pb-4 text-sm font-medium transition-all relative whitespace-nowrap ${activeTab === 'bookings'
+                ? 'text-primary'
+                : 'text-earth/40 hover:text-earth/60'
+                }`}
+            >
+              Recent Bookings
+              {activeTab === 'bookings' && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+              )}
+            </button>
           </div>
 
           {/* Listings Tab */}
           {activeTab === 'listings' && (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {mockListings.map((listing) => (
-                <div key={listing.id} className="bg-white dark:bg-charcoal border border-earth/5 dark:border-earth/20 rounded-card shadow-card overflow-hidden">
-                  <div className="relative h-40">
+                <div key={listing.id} className="bg-white rounded-2xl border border-earth/5 shadow-soft overflow-hidden group hover:border-earth/10 transition-all">
+                  <div className="relative h-48 overflow-hidden">
                     <img
                       src={listing.photo}
                       alt={listing.title}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                     />
                     <Badge
                       variant={listing.status === 'active' ? 'active' : 'pending'}
-                      className="absolute top-3 right-3"
+                      className="absolute top-3 left-3"
                     >
                       {listing.status}
                     </Badge>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-semibold text-earth dark:text-cream">{listing.title}</h3>
+                  <div className="p-5">
+                    <h3 className="font-serif font-medium text-lg text-earth truncate">{listing.title}</h3>
                     <p className="text-primary font-bold mt-1">
-                      {formatPrice(listing.price_monthly)}/month
+                      {formatPrice(listing.price_monthly)}/mo
                     </p>
-                    <div className="flex items-center gap-4 mt-3 text-sm text-earth/60 dark:text-cream/60">
-                      <div className="flex items-center gap-1">
+                    <div className="flex items-center gap-6 mt-4 pt-4 border-t border-earth/5 text-xs text-earth/50">
+                      <div className="flex items-center gap-1.5">
                         <Eye className="w-4 h-4" />
-                        {listing.views}
+                        {listing.views} Views
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
                         <Calendar className="w-4 h-4" />
-                        {listing.bookings}
+                        {listing.bookings} Bookings
                       </div>
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.2 ml-auto">
                         <Star className="w-4 h-4 text-accent fill-accent" />
-                        {listing.rating}
+                        <span className="text-earth font-medium">{listing.rating}</span>
                       </div>
                     </div>
-                    <div className="flex gap-2 mt-4">
-                      <Button variant="secondary" size="sm" className="flex-1">
+                    <div className="flex gap-2 mt-6">
+                      <Button variant="outline" size="sm" className="flex-1">
                         Edit
                       </Button>
-                      <Button variant="ghost" size="sm" className="dark:text-cream/60">
+                      <Button variant="ghost" size="sm">
                         <MoreVertical className="w-4 h-4" />
                       </Button>
                     </div>
@@ -191,13 +204,13 @@ export default function HostDashboard() {
 
           {/* Bookings Tab */}
           {activeTab === 'bookings' && (
-            <div className="space-y-4">
+            <div className="grid gap-4">
               {mockBookings.map((booking) => (
-                <div key={booking.id} className="bg-white dark:bg-charcoal border border-earth/5 dark:border-earth/20 rounded-card shadow-card p-4">
-                  <div className="flex flex-col md:flex-row md:items-center gap-4">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-semibold text-earth dark:text-cream">{booking.listing_title}</h3>
+                <div key={booking.id} className="bg-white rounded-2xl border border-earth/5 shadow-soft p-5 hover:border-earth/10 transition-all">
+                  <div className="flex flex-col md:flex-row md:items-center gap-6">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="text-xl font-serif font-medium text-earth truncate">{booking.listing_title}</h3>
                         <Badge
                           variant={
                             booking.status === 'accepted' ? 'active' :
@@ -207,25 +220,29 @@ export default function HostDashboard() {
                           {booking.status}
                         </Badge>
                       </div>
-                      <p className="text-sm text-earth/60 dark:text-cream/60">
-                        {booking.renter_name} • {booking.start_date} to {booking.end_date}
+                      <p className="text-sm text-earth/60">
+                        {booking.renter_name} • {new Date(booking.start_date).toLocaleDateString()} to {new Date(booking.end_date).toLocaleDateString()}
                       </p>
                       <p className="text-primary font-semibold mt-1">
                         {formatPrice(booking.price)}
                       </p>
                     </div>
                     {booking.status === 'pending' && (
-                      <div className="flex gap-2">
-                        <Button size="sm">
-                          <Check className="w-4 h-4 mr-1" />
+                      <div className="flex gap-3">
+                        <Button size="sm" className="bg-emerald text-white border-emerald hover:bg-emerald-dark">
+                          <Check className="w-4 h-4 mr-1.5" />
                           Accept
                         </Button>
                         <Button variant="secondary" size="sm">
-                          <X className="w-4 h-4 mr-1" />
+                          <X className="w-4 h-4 mr-1.5" />
                           Decline
                         </Button>
                       </div>
                     )}
+                    <Button variant="ghost" size="sm">
+                      <MessageSquare className="w-4 h-4 mr-2" />
+                      Chat
+                    </Button>
                   </div>
                 </div>
               ))}
