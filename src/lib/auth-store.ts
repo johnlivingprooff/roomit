@@ -22,9 +22,9 @@ export const useAuthStore = create<AuthState>()(
       isLoading: true,
 
       setUser: (user) => set({ user }),
-      
+
       setSubscription: (subscription) => set({ subscription }),
-      
+
       setLoading: (isLoading) => set({ isLoading }),
 
       hasActiveSubscription: () => {
@@ -46,7 +46,7 @@ export const useAuthStore = create<AuthState>()(
       logout: () => set({ user: null, subscription: null }),
     }),
     {
-      name: 'roomit-auth',
+      name: 'roomie-auth',
       partialize: (state) => ({ user: state.user }),
     }
   )

@@ -49,7 +49,7 @@ function LoginContent() {
             <div className="w-12 h-12 bg-primary rounded-xl flex items-center justify-center">
               <Phone className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-serif font-medium text-earth">RoomIt</span>
+            <span className="text-2xl font-serif font-medium text-earth">Roomie</span>
           </Link>
           <h1 className="mt-8 text-3xl font-serif font-medium text-earth">
             {isSignup ? 'Create Your Account' : 'Welcome Back'}

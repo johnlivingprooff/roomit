@@ -94,7 +94,7 @@ export default function HomePage() {
         <section className="section-spacing bg-cream">
           <div className="container-soft">
             <h2 className="text-3xl md:text-4xl font-serif font-medium text-center text-earth">
-              Why RoomIt?
+              Why Roomie?
             </h2>
             <div className="mt-12 grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               <div className="bg-white rounded-card p-6 card-hover">

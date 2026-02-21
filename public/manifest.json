@@ -1,6 +1,6 @@
 {
-  "name": "RoomIt - Budget Room & House Rental",
-  "short_name": "RoomIt",
+  "name": "Roomie - Budget Room & House Rental",
+  "short_name": "Roomie",
   "description": "Find trusted rooms and houses in Malawi and Zimbabwe",
   "start_url": "/",
   "display": "standalone",
@@ -21,7 +21,10 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["lifestyle", "shopping"],
+  "categories": [
+    "lifestyle",
+    "shopping"
+  ],
   "lang": "en",
   "dir": "ltr",
   "scope": "/",

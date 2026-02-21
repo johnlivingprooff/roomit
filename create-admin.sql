@@ -18,9 +18,9 @@ CREATE TABLE IF NOT EXISTS users (
 -- Insert Admin User
 INSERT INTO users (phone, email, name, role, verified_status, risk_score)
 VALUES 
-  ('+265888000000', 'admin@roomit.mw', 'Admin', 'admin', 'verified', 0),
-  ('+265999000000', 'host@roomit.mw', 'John Host', 'host', 'verified', 0),
-  ('+265999000001', 'renter@roomit.mw', 'Jane Renter', 'renter', 'verified', 0)
+  ('+265888000000', 'admin@roomie.mw', 'Admin', 'admin', 'verified', 0),
+  ('+265999000000', 'host@roomie.mw', 'John Host', 'host', 'verified', 0),
+  ('+265999000001', 'renter@roomie.mw', 'Jane Renter', 'renter', 'verified', 0)
 ON CONFLICT (phone) DO NOTHING;
 
 -- Verify

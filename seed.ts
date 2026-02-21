@@ -11,7 +11,7 @@ async function seed() {
   // Create admin user
   const [adminUser] = await db.insert(schema.users).values({
     phone: '+265888000000',
-    email: 'admin@roomit.mw',
+    email: 'admin@roomie.mw',
     name: 'Admin',
     role: 'admin',
     verifiedStatus: 'verified',

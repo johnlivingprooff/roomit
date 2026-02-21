@@ -1,8 +1,8 @@
-# RoomIt - Budget Room & House Rental Platform
+# Roomie - Budget Room & House Rental Platform
 
 ## Project Overview
 
-**Project Name:** RoomIt  
+**Project Name:** Roomie  
 **Type:** Mobile-first PWA Web Application  
 **Core Functionality:** Paywalled rental platform for budget rooms/houses in Malawi/Zimbabwe with trust-first model, subscription gating, and mobile money integration.  
 **Target Users:** Budget renters seeking rooms/houses, hosts listing modest accommodations, platform administrators.

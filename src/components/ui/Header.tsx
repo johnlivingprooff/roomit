@@ -48,7 +48,7 @@ export function Header() {
           <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center">
             <Home className="w-5 h-5 text-white" />
           </div>
-          <span className="text-xl font-serif font-medium text-earth">RoomIt</span>
+          <span className="text-xl font-serif font-medium text-earth">Roomie</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-8">

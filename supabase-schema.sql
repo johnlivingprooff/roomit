@@ -1,4 +1,4 @@
--- RoomIt Database Schema
+-- Roomie Database Schema
 -- Run this in Supabase SQL Editor
 
 -- Enable UUID extension
