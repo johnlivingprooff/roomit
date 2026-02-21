@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Check, Shield, Star, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Footer } from '@/components/ui/Footer';
 
 const tiers = [
   {
@@ -179,6 +180,7 @@ export default function SubscribePage() {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

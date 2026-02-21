@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Check, MapPin } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
+import { Footer } from '@/components/ui/Footer';
 import { Button } from '@/components/ui/Button';
 
 const mockListing = {
@@ -213,6 +214,7 @@ export default function BookingPage() {
           </Suspense>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

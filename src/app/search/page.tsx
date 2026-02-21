@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Search, SlidersHorizontal, X, MapPin, LayoutGrid, List } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
+import { Footer } from '@/components/ui/Footer';
 import { ListingCard } from '@/components/ui/ListingCard';
 import { Button } from '@/components/ui/Button';
 import type { Listing } from '@/lib/types';
@@ -382,6 +383,7 @@ export default function SearchPage() {
           )}
         </div>
       </main>
+      <Footer />
     </div>
   );
 }

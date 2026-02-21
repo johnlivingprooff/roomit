@@ -9,6 +9,7 @@ import {
   ChevronLeft, ChevronRight, Calendar, Clock
 } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
+import { Footer } from '@/components/ui/Footer';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 
@@ -371,6 +372,7 @@ export default function ListingDetailPage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
