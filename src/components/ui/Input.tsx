@@ -21,7 +21,8 @@ export function Input({ label, error, className, ...props }: InputProps) {
             'bg-white dark:bg-charcoal',
             'border-earth/15 dark:border-earth/20',
             'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary',
-            'placeholder:text-earth/40 dark:placeholder:text-cream/30',
+            'text-earth/50 dark:text-cream/50',
+            'placeholder:text-earth/50 dark:placeholder:text-cream/50',
             error && 'border-error focus:ring-error/50 focus:border-error',
             className
           )
@@ -55,7 +56,8 @@ export function Textarea({ label, error, className, ...props }: TextareaProps) {
             'bg-white dark:bg-charcoal',
             'border-earth/15 dark:border-earth/20',
             'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary',
-            'placeholder:text-earth/40 dark:placeholder:text-cream/30',
+            'text-earth/50 dark:text-cream/50',
+            'placeholder:text-earth/50 dark:placeholder:text-cream/50',
             error && 'border-error focus:ring-error/50 focus:border-error',
             className
           )
@@ -90,6 +92,7 @@ export function Select({ label, error, options, className, ...props }: SelectPro
             'bg-white dark:bg-charcoal',
             'border-earth/15 dark:border-earth/20',
             'focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary',
+            'text-earth/50 dark:text-cream/50',
             error && 'border-error focus:ring-error/50 focus:border-error',
             className
           )

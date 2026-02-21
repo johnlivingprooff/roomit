@@ -292,7 +292,7 @@ export default function SearchPage() {
                   <select
                     value={filters.type}
                     onChange={(e) => setFilters({ ...filters, type: e.target.value as any })}
-                    className="h-11 px-4 border border-earth/10 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald/20 text-earth"
+                    className="h-11 px-4 border border-earth/10 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald/20 text-earth/50"
                   >
                     <option value="">Property</option>
                     <option value="room">Room</option>
@@ -354,7 +354,7 @@ export default function SearchPage() {
             <p className="text-earth">
               {filteredListings.length} properties found
             </p>
-            <select className="h-11 px-4 border border-earth/15 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald/30 text-earth">
+            <select className="h-11 px-4 border border-earth/15 rounded-lg bg-white focus:outline-none focus:ring-2 focus:ring-emerald/30 text-earth/50">
               <option>Sort by: Recommended</option>
               <option>Price: Low to High</option>
               <option>Price: High to Low</option>
