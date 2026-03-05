@@ -126,7 +126,7 @@ function LoginContent() {
   };
 
   return (
-    <div className="min-h-screen bg-cream flex items-center justify-center p-6">
+    <div className="min-h-full bg-cream flex items-center justify-center p-6">
       <div className="w-full max-w-md">
         <div className="text-center mb-10">
           <Link href="/" className="inline-flex items-center gap-3">
@@ -267,7 +267,7 @@ function LoginContent() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-cream flex items-center justify-center p-6">
+      <div className="min-h-full bg-cream flex items-center justify-center p-6">
         <div className="w-full max-w-md">
           <div className="text-center mb-10">
             <div className="w-12 h-12 bg-emerald rounded-xl flex items-center justify-center mx-auto">

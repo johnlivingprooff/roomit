@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { MapPin, Shield, Wifi, Droplets, Zap } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
-import { Footer } from '@/components/ui/Footer';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { getListingById, hasDatabase } from '@/lib/db';
@@ -15,7 +14,7 @@ export default async function ListingDetailPage({
 }) {
   if (!hasDatabase) {
     return (
-      <div className="min-h-screen bg-cream">
+      <div className="min-h-full bg-cream">
         <Header />
         <main className="pt-24 pb-12">
           <div className="max-w-3xl mx-auto px-4">
@@ -24,7 +23,6 @@ export default async function ListingDetailPage({
             </div>
           </div>
         </main>
-        <Footer />
       </div>
     );
   }
@@ -43,7 +41,7 @@ export default async function ListingDetailPage({
     }).format(price);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-full bg-cream">
       <Header />
 
       <main className="pt-20 pb-12">
@@ -132,7 +130,6 @@ export default async function ListingDetailPage({
           </div>
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

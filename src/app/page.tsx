@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import { Search, Shield, Smartphone, CreditCard, ArrowRight, Home, Users, Star } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
-import { Footer } from '@/components/ui/Footer';
 import { Button } from '@/components/ui/Button';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-full bg-cream">
       <Header />
 
       <main className="pt-16">
@@ -233,7 +232,6 @@ export default function HomePage() {
         </section>
       </main>
 
-      <Footer />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Check, Shield, Star, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Footer } from '@/components/ui/Footer';
 
 const tiers = [
   {
@@ -75,7 +74,7 @@ export default function SubscribePage() {
   };
 
   return (
-    <div className="min-h-screen bg-cream py-12 md:py-20">
+    <div className="min-h-full bg-cream py-12 md:py-20">
       <div className="container-soft">
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-serif font-medium text-earth">
@@ -149,7 +148,6 @@ export default function SubscribePage() {
           </div>
         </div>
       </div>
-      <Footer />
     </div>
   );
 }

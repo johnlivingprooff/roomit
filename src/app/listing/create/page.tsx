@@ -124,7 +124,7 @@ export default function CreateListingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-full bg-background">
       <Header />
 
       <main className="pt-20 pb-12">

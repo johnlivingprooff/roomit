@@ -51,7 +51,7 @@ export default function RenterDashboard() {
     }).format(price);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-full bg-cream">
       <Header />
 
       <main className="pt-24 pb-12">

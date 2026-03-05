@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Check, MapPin } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
-import { Footer } from '@/components/ui/Footer';
 import { Button } from '@/components/ui/Button';
 import type { Listing } from '@/lib/types';
 
@@ -108,7 +107,7 @@ export default function BookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-full bg-cream">
       <Header />
 
       <main className="pt-24 pb-12">
@@ -225,7 +224,6 @@ export default function BookingPage() {
           )}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }

@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { Search, SlidersHorizontal, X, LayoutGrid, List } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
-import { Footer } from '@/components/ui/Footer';
 import { ListingCard } from '@/components/ui/ListingCard';
 import { Button } from '@/components/ui/Button';
 import type { Listing } from '@/lib/types';
@@ -81,7 +80,7 @@ export default function SearchPage() {
   }, [filters, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-cream">
+    <div className="min-h-full bg-cream">
       <Header />
 
       <main className="pt-20 pb-12">
@@ -237,7 +236,6 @@ export default function SearchPage() {
           )}
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
