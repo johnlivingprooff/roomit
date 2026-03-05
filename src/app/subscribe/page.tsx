@@ -16,7 +16,6 @@ const tiers = [
       'Browse all verified listings',
       'Message hosts directly',
       'Make and manage bookings',
-      'Save favorite places',
       'Basic support',
     ],
     popular: false,
@@ -25,18 +24,16 @@ const tiers = [
     id: 'premium',
     name: 'Premium',
     price: 3,
-    description: 'For those who want the best experience',
+    description: 'For hosts and renters who need more',
     features: [
       'Everything in Basic',
       'Priority listing placement',
       'Verified host badge',
-      'Analytics for hosts',
       'Priority support',
-      'Early access to new features',
     ],
     popular: true,
   },
-];
+] as const;
 
 const benefits = [
   { icon: Shield, title: 'Verified Community', desc: 'Every member is vetted' },
@@ -44,24 +41,37 @@ const benefits = [
   { icon: Star, title: 'Secure Bookings', desc: 'Protected transactions' },
 ];
 
-const paymentMethods = [
-  { id: 'ecocash', name: 'EcoCash', logo: '💰' },
-  { id: 'airtel', name: 'Airtel Money', logo: '📱' },
-  { id: 'tnm', name: 'TNM Mpamba', logo: '📲' },
-];
-
 export default function SubscribePage() {
   const router = useRouter();
-  const [selectedTier, setSelectedTier] = useState('basic');
-  const [selectedPayment, setSelectedPayment] = useState('ecocash');
+  const [selectedTier, setSelectedTier] = useState<'basic' | 'premium'>('basic');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubscribe = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    setError('');
+
+    try {
+      const response = await fetch('/api/subscriptions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ tier: selectedTier }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.error || 'Failed to update subscription.');
+        return;
+      }
+
       router.push('/search');
-    }, 2000);
+    } catch {
+      setError('Failed to update subscription.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -72,11 +82,10 @@ export default function SubscribePage() {
             Join the Trusted Community
           </h1>
           <p className="mt-4 text-lg text-earth/70 max-w-2xl mx-auto">
-            A small monthly contribution keeps our community safe, genuine, and focused on real connections.
+            A small monthly contribution keeps the community safe and usable.
           </p>
         </div>
 
-        {/* Trust Badges */}
         <div className="flex flex-wrap justify-center gap-8 mb-12">
           {benefits.map((benefit) => (
             <div key={benefit.title} className="flex items-center gap-3">
@@ -91,15 +100,13 @@ export default function SubscribePage() {
           ))}
         </div>
 
-        {/* Tier Cards */}
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-12">
+        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto mb-8">
           {tiers.map((tier) => (
             <div
               key={tier.id}
-              className={`relative bg-white rounded-card p-8 transition-all cursor-pointer ${selectedTier === tier.id
-                ? 'ring-2 ring-primary shadow-elevated'
-                : 'hover:shadow-soft'
-                }`}
+              className={`relative bg-white rounded-card p-8 transition-all cursor-pointer ${
+                selectedTier === tier.id ? 'ring-2 ring-primary shadow-elevated' : 'hover:shadow-soft'
+              }`}
               onClick={() => setSelectedTier(tier.id)}
             >
               {tier.popular && (
@@ -109,9 +116,7 @@ export default function SubscribePage() {
               )}
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-serif text-2xl font-medium text-earth">{tier.name}</h3>
-                {selectedTier === tier.id && (
-                  <Check className="w-6 h-6 text-primary" />
-                )}
+                {selectedTier === tier.id && <Check className="w-6 h-6 text-primary" />}
               </div>
               <p className="text-earth mb-6">{tier.description}</p>
               <div className="mb-6">
@@ -119,8 +124,8 @@ export default function SubscribePage() {
                 <span className="text-earth/70 ml-2">/month</span>
               </div>
               <ul className="space-y-3">
-                {tier.features.map((feature, i) => (
-                  <li key={i} className="flex items-center gap-3 text-earth">
+                {tier.features.map((feature) => (
+                  <li key={feature} className="flex items-center gap-3 text-earth">
                     <Check className="w-5 h-5 text-primary flex-shrink-0" />
                     <span>{feature}</span>
                   </li>
@@ -130,53 +135,17 @@ export default function SubscribePage() {
           ))}
         </div>
 
-        {/* Payment Methods */}
         <div className="max-w-md mx-auto">
-          <div className="bg-white dark:bg-charcoal border border-earth/5 dark:border-earth/20 rounded-card p-6 shadow-soft">
-            <h3 className="font-serif text-lg font-medium text-earth dark:text-cream mb-4">Payment Method</h3>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-              {paymentMethods.map((method) => (
-                <button
-                  key={method.id}
-                  type="button"
-                  onClick={() => setSelectedPayment(method.id)}
-                  className={`p-3 rounded-lg border-2 transition-all ${selectedPayment === method.id
-                    ? 'border-primary bg-primary/5'
-                    : 'border-earth/10 hover:border-earth/20'
-                    }`}
-                >
-                  <span className="block text-2xl mb-1">{method.logo}</span>
-                  <span className="text-xs font-medium text-earth/80 dark:text-cream/80">{method.name}</span>
-                </button>
-              ))}
-            </div>
-
-            {selectedPayment !== 'card' && (
-              <div className="bg-sand/30 dark:bg-sand/10 rounded-lg p-4 mb-6">
-                <p className="text-sm text-earth/80 dark:text-cream/80">
-                  You&apos;ll receive an SMS with payment instructions. Standard SMS rates may apply.
-                </p>
+          <div className="bg-white border border-earth/5 rounded-card p-6 shadow-soft">
+            {error && (
+              <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                {error}
               </div>
             )}
-
-            <Button
-              className="w-full"
-              size="lg"
-              onClick={handleSubscribe}
-              isLoading={isLoading}
-            >
-              {isLoading ? (
-                'Processing...'
-              ) : (
-                <>
-                  Unlock Access for ${tiers.find(t => t.id === selectedTier)?.price}/month
-                </>
-              )}
+            <Button className="w-full" size="lg" onClick={handleSubscribe} isLoading={isLoading}>
+              Unlock Access for ${tiers.find((tier) => tier.id === selectedTier)?.price}/month
             </Button>
-
-            <p className="text-center text-sm text-earth/60 dark:text-cream/60 mt-4">
-              Cancel anytime. No hidden fees.
-            </p>
+            <p className="text-center text-sm text-earth/60 mt-4">Cancel anytime. No hidden fees.</p>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Search, Shield, Smartphone, CreditCard, ArrowRight, Home, Users, Star, LayoutGrid, List } from 'lucide-react';
+import { Search, Shield, Smartphone, CreditCard, ArrowRight, Home, Users, Star } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
 import { Footer } from '@/components/ui/Footer';
 import { Button } from '@/components/ui/Button';

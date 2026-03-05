@@ -7,11 +7,13 @@ import { Phone, ArrowRight, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { useAuthStore } from '@/lib/auth-store';
+import { getDashboardPathForRole } from '@/lib/auth/paths';
 
 function LoginContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const isSignup = searchParams.get('signup') === 'true';
+  const nextPath = searchParams.get('next');
 
   const { setUser } = useAuthStore();
 
@@ -22,32 +24,50 @@ function LoginContent() {
   const [role, setRole] = useState<'renter' | 'host'>('renter');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [debugCode, setDebugCode] = useState('');
+  const [showRequestNewCode, setShowRequestNewCode] = useState(false);
+  const [isResendingCode, setIsResendingCode] = useState(false);
+
+  const sendOtpRequest = async () => {
+    const res = await fetch('/api/auth', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'send-otp',
+        phone,
+        name: isSignup ? name : undefined,
+        role: isSignup ? role : undefined,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (!data.success) {
+      setError(data.error || 'Failed to send OTP');
+      return false;
+    }
+
+    if (typeof data.debugCode === 'string') {
+      setDebugCode(data.debugCode);
+    }
+
+    setError('');
+    return true;
+  };
 
   const handleSendOTP = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setError('');
+    setDebugCode('');
+    setShowRequestNewCode(false);
 
     try {
-      const res = await fetch('/api/auth', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          action: 'send-otp',
-          phone,
-          name: isSignup ? name : undefined,
-          role: isSignup ? role : undefined,
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!data.success) {
-        setError(data.error || 'Failed to send OTP');
-      } else {
+      const sent = await sendOtpRequest();
+      if (sent) {
         setStep('otp');
       }
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Try again.');
     } finally {
       setIsLoading(false);
@@ -74,23 +94,34 @@ function LoginContent() {
 
       if (!data.success) {
         setError(data.error || 'Invalid OTP');
+        setShowRequestNewCode(res.status === 400);
       } else {
-        // Store user in zustand store (persisted)
+        setShowRequestNewCode(false);
         setUser(data.user);
-
-        // Redirect based on role
-        if (data.user.role === 'host') {
-          router.push('/dashboard/host');
-        } else if (data.user.role === 'admin') {
-          router.push('/admin');
-        } else {
-          router.push('/dashboard/renter');
-        }
+        router.push(nextPath || getDashboardPathForRole(data.user.role));
       }
-    } catch (err) {
+    } catch {
       setError('Something went wrong. Try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleRequestNewCode = async () => {
+    setIsResendingCode(true);
+    setError('');
+    setDebugCode('');
+
+    try {
+      const sent = await sendOtpRequest();
+      if (sent) {
+        setOtp('');
+        setShowRequestNewCode(false);
+      }
+    } catch {
+      setError('Something went wrong. Try again.');
+    } finally {
+      setIsResendingCode(false);
     }
   };
 
@@ -189,13 +220,31 @@ function LoginContent() {
                   className="text-center text-2xl tracking-[0.5em] font-mono"
                   required
                 />
+                {showRequestNewCode && (
+                  <button
+                    type="button"
+                    onClick={handleRequestNewCode}
+                    disabled={isResendingCode}
+                    className="mt-3 text-sm text-primary hover:underline disabled:opacity-60 disabled:no-underline"
+                  >
+                    {isResendingCode ? 'Requesting...' : 'Request New Code'}
+                  </button>
+                )}
               </div>
               <Button type="submit" className="w-full h-12" isLoading={isLoading}>
                 Verify & Continue
               </Button>
+              {debugCode && (
+                <p className="text-xs text-earth/60 text-center">
+                  Development code: <span className="font-mono">{debugCode}</span>
+                </p>
+              )}
               <button
                 type="button"
-                onClick={() => setStep('phone')}
+                onClick={() => {
+                  setShowRequestNewCode(false);
+                  setStep('phone');
+                }}
                 className="w-full text-sm text-earth/70 hover:text-earth"
               >
                 Change phone number

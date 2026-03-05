@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# RoomIt
 
-## Getting Started
+RoomIt is a Next.js 14 rental marketplace for budget rooms and houses. This repository now uses server-issued session cookies, route guards, and database-backed APIs for auth, listings, bookings, subscriptions, and admin reporting.
 
-First, run the development server:
+## Stack
+
+- Next.js 14 App Router
+- TypeScript
+- Tailwind CSS
+- Neon/PostgreSQL via `@neondatabase/serverless`
+- SMS delivery via Africa's Talking or Twilio
+
+## Environment
+
+Copy `.env.example` and provide:
+
+- `DATABASE_URL` for the Neon/Postgres database
+- `AUTH_SECRET` for signing the `roomit_session` cookie
+- SMS provider credentials for production OTP delivery
+
+If `DATABASE_URL` is missing, the app will still render, but live data features will fall back to empty states and protected mutations will fail safely.
+
+## Local Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Validation commands:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run lint
+npm run typecheck
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Authentication
 
-## Learn More
+- Login uses phone number + OTP.
+- Successful verification sets an `httpOnly` signed session cookie.
+- Public signup can create only `renter` or `host`.
+- Admin accounts must be provisioned directly in the database.
 
-To learn more about Next.js, take a look at the following resources:
+## Admin Bootstrap
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Use [`create-admin.sql`](/home/johnlivingprooff/roomit/roomit/create-admin.sql) to seed an admin account and sample users in the database. Public signup will not create admins.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Core API Routes
 
-## Deploy on Vercel
+- `POST /api/auth`
+- `GET /api/auth/session`
+- `POST /api/auth/logout`
+- `GET/POST /api/listings`
+- `GET/PATCH/DELETE /api/listings/[id]`
+- `GET/POST /api/bookings`
+- `GET/PATCH /api/bookings/[id]`
+- `GET/POST /api/subscriptions`
+- `GET /api/admin/*` protected admin reporting routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Deployment Notes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Set `AUTH_SECRET` in production.
+- Configure an SMS provider in production; OTP delivery fails closed without one.
+- Apply the database schema from `supabase-schema.sql`, then run `create-admin.sql` if you need an initial admin.
+- The local sandbox used during development surfaced an `EXDEV` `.next` rename issue during `next build`; validate the final build on the real deployment target as part of release verification.

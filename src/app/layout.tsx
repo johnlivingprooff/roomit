@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { AuthBootstrap } from '@/components/auth/AuthBootstrap';
 
 export const metadata: Metadata = {
   title: 'Roomie - Budget Room & House Rental',
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-background">
+        <AuthBootstrap />
         {children}
       </body>
     </html>

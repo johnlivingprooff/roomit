@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { Home, Search, User, Menu, X, LogOut, LayoutDashboard } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '@/lib/auth-store';
+import { getDashboardPathForRole } from '@/lib/auth/paths';
 import { Button } from './Button';
 
 export function Header() {
@@ -22,9 +23,16 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleLogout = () => {
-    logout();
-    router.push('/');
+  const handleLogout = async () => {
+    try {
+      await fetch('/api/auth/logout', {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } finally {
+      logout();
+      router.push('/');
+    }
   };
 
   const navLinks = [
@@ -33,9 +41,9 @@ export function Header() {
   ];
 
   const userLinks = user
-    ? user.role === 'host'
-      ? [{ href: '/dashboard/host', label: 'Dashboard', icon: LayoutDashboard }]
-      : [{ href: '/dashboard/renter', label: 'Dashboard', icon: LayoutDashboard }]
+    ? [
+        { href: getDashboardPathForRole(user.role), label: user.role === 'admin' ? 'Admin' : 'Dashboard', icon: LayoutDashboard },
+      ]
     : [];
 
   return (
@@ -93,7 +101,7 @@ export function Header() {
                 {user.role === 'host' ? 'Premium Tools' : 'Upgrade Plan'}
               </Link>
               <div className="h-4 w-px bg-earth/10" />
-              <Link href={user.role === 'host' ? '/dashboard/host' : '/dashboard/renter'} className="flex items-center gap-2 group">
+              <Link href={getDashboardPathForRole(user.role)} className="flex items-center gap-2 group">
                 <span className="text-sm font-medium text-earth group-hover:text-primary transition-colors">
                   {user.name || 'Account'}
                 </span>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { MapPin, Star, Home, DoorOpen } from 'lucide-react';
 import { Badge } from './Badge';
@@ -22,10 +23,12 @@ export function ListingCard({ listing, showPreviewWatermark }: ListingCardProps)
       <div className="card card-hover group">
         <div className="relative aspect-[5/4] bg-sand/30 overflow-hidden">
           {listing.photos && listing.photos.length > 0 ? (
-            <img
+            <Image
               src={listing.photos[0]}
               alt={listing.title}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              fill
+              sizes="(max-width: 768px) 100vw, 33vw"
+              className="object-cover group-hover:scale-105 transition-transform duration-500"
               loading="lazy"
             />
           ) : (

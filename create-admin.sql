@@ -1,4 +1,5 @@
--- Run this in Neon SQL Editor to create admin account
+-- Run this in Neon SQL Editor to bootstrap admin and seed sample users.
+-- Public signup in the app only allows renter and host accounts.
 
 -- Create users table if not exists (for fresh setup)
 CREATE TABLE IF NOT EXISTS users (

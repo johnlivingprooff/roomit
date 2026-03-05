@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 
 interface BadgeProps {
-  variant?: 'default' | 'verified' | 'premium' | 'pending' | 'active' | 'error';
+  variant?: 'default' | 'verified' | 'premium' | 'pending' | 'active' | 'warning' | 'error';
   children: React.ReactNode;
   className?: string;
 }
@@ -13,6 +13,7 @@ export function Badge({ variant = 'default', children, className }: BadgeProps) 
     premium: 'bg-accent text-white',
     pending: 'bg-sand text-earth/60',
     active: 'bg-primary text-white',
+    warning: 'bg-amber-100 text-amber-900',
     error: 'bg-error text-white',
   };
 
