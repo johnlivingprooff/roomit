@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from 'next';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { AuthBootstrap } from '@/components/auth/AuthBootstrap';
 
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className="min-h-screen bg-background">
         <AuthBootstrap />
         {children}
+        <Analytics />
       </body>
     </html>
   );
