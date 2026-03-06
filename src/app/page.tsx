@@ -1,7 +1,38 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Search, Shield, Smartphone, CreditCard, ArrowRight, Home, Users, Star } from 'lucide-react';
 import { Header } from '@/components/ui/Header';
 import { Button } from '@/components/ui/Button';
+
+const featuredProperties = [
+  {
+    id: 'featured-room-lilongwe',
+    title: 'Skyline View Room',
+    location: 'Victoria Island, Lagos',
+    price: '$45/night',
+    type: 'Room',
+    image:
+      'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: 'featured-house-ikoyi',
+    title: 'Modern High-Rise Apartment',
+    location: 'Ikoyi, Lagos',
+    price: '$120/night',
+    type: 'House',
+    image:
+      'https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: 'featured-penthouse-eko',
+    title: 'Eko Atlantic Penthouse',
+    location: 'Eko Atlantic, Lagos',
+    price: '$180/night',
+    type: 'House',
+    image:
+      'https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1200&q=80',
+  },
+];
 
 export default function HomePage() {
   return (
@@ -10,14 +41,23 @@ export default function HomePage() {
 
       <main className="pt-16">
         {/* Hero Section */}
-        <section className="relative overflow-hidden bg-gradient-to-b from-sand/50 to-cream">
+        <section className="relative overflow-hidden">
+          <Image
+            src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=2400&q=80"
+            alt="Lagos skyline with high-rise buildings"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-charcoal/70 via-charcoal/60 to-cream/80" />
           <div className="container-soft relative py-20 md:py-32">
             <div className="max-w-3xl mx-auto text-center">
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-earth leading-[1.15]">
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium text-cream leading-[1.15] drop-shadow-[0_2px_10px_rgba(0,0,0,0.35)]">
                 Comfort Within{' '}
-                <span className="text-emerald">Reach.</span>
+                <span className="text-sand">Reach.</span>
               </h1>
-              <p className="mt-6 text-lg md:text-xl text-earth/70 max-w-2xl mx-auto leading-relaxed">
+              <p className="mt-6 text-lg md:text-xl text-cream/90 max-w-2xl mx-auto leading-relaxed">
                 Rooms and homes designed for real life.
                 Trusted spaces in Malawi & Zimbabwe.
               </p>
@@ -85,6 +125,52 @@ export default function HomePage() {
                   Connect with hosts, book with confidence, and enjoy your new space with peace of mind.
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Properties */}
+        <section className="section-spacing bg-cream/60">
+          <div className="container-soft">
+            <h2 className="text-3xl md:text-4xl font-serif font-medium text-center text-earth">
+              Featured Properties
+            </h2>
+            <p className="mt-4 text-center text-earth/60 max-w-2xl mx-auto">
+              Explore highlighted homes with strong demand and standout locations.
+            </p>
+
+            <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredProperties.map((property) => (
+                <article
+                  key={property.id}
+                  className="bg-white rounded-card overflow-hidden border border-earth/10 shadow-soft"
+                >
+                  <div className="relative h-56">
+                    <Image
+                      src={property.image}
+                      alt={property.title}
+                      fill
+                      sizes="(max-width: 1024px) 50vw, 33vw"
+                      className="object-cover"
+                    />
+                    <div className="absolute top-3 left-3 bg-white/90 text-earth text-xs font-medium px-3 py-1 rounded-full">
+                      {property.type}
+                    </div>
+                  </div>
+                  <div className="p-5">
+                    <h3 className="text-xl font-serif font-medium text-earth">{property.title}</h3>
+                    <p className="mt-1 text-earth/60">{property.location}</p>
+                    <div className="mt-4 flex items-center justify-between">
+                      <span className="text-primary font-semibold">{property.price}</span>
+                      <Link href="/search">
+                        <Button size="sm" variant="secondary">
+                          View
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                </article>
+              ))}
             </div>
           </div>
         </section>

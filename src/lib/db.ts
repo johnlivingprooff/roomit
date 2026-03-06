@@ -1,4 +1,5 @@
 import { neon } from '@neondatabase/serverless';
+import postgres from 'postgres';
 import type {
   Booking,
   BookingStatus,
@@ -86,9 +87,29 @@ export interface OtpChallengeRecord {
   expires_at: string;
 }
 
-const DATABASE_URL = process.env.DATABASE_URL;
+const DATABASE_URL_RAW = process.env.DATABASE_URL;
+const DATABASE_URL = DATABASE_URL_RAW?.trim().replace(/^['"]|['"]$/g, '');
 
-export const sql = DATABASE_URL ? neon(DATABASE_URL) : null;
+function isLocalDatabaseUrl(url: string) {
+  try {
+    const parsed = new URL(url);
+    return parsed.hostname === 'localhost' || parsed.hostname === '127.0.0.1';
+  } catch {
+    return false;
+  }
+}
+
+const shouldUseLocalPostgresDriver = DATABASE_URL ? isLocalDatabaseUrl(DATABASE_URL) : false;
+const useSsl = DATABASE_URL ? !DATABASE_URL.includes('sslmode=disable') : false;
+
+export const sql = DATABASE_URL
+  ? shouldUseLocalPostgresDriver
+    ? postgres(DATABASE_URL, {
+        prepare: false,
+        ssl: useSsl ? 'require' : false,
+      })
+    : neon(DATABASE_URL)
+  : null;
 export const hasDatabase = Boolean(sql);
 
 let otpTableReady: Promise<void> | null = null;
@@ -344,7 +365,7 @@ export async function listListingsForHost(hostId: string): Promise<Listing[]> {
     ORDER BY created_at DESC
   `;
 
-  return rows as Listing[];
+  return rows as unknown as Listing[];
 }
 
 export async function createListing(hostId: string, input: ListingInput): Promise<Listing> {
@@ -429,7 +450,7 @@ export async function listBookingsForUser(userId: string, role: User['role']): P
 
   if (role === 'admin') {
     const rows = await db`SELECT * FROM bookings ORDER BY created_at DESC`;
-    return rows as Booking[];
+    return rows as unknown as Booking[];
   }
 
   if (role === 'host') {
@@ -440,7 +461,7 @@ export async function listBookingsForUser(userId: string, role: User['role']): P
       WHERE listings.host_id = ${userId}
       ORDER BY bookings.created_at DESC
     `;
-    return rows as Booking[];
+    return rows as unknown as Booking[];
   }
 
   const rows = await db`
@@ -450,7 +471,7 @@ export async function listBookingsForUser(userId: string, role: User['role']): P
     ORDER BY created_at DESC
   `;
 
-  return rows as Booking[];
+  return rows as unknown as Booking[];
 }
 
 export async function getBookingById(id: string): Promise<Booking | null> {

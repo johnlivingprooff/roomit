@@ -18,6 +18,12 @@ Copy `.env.example` and provide:
 - `AUTH_SECRET` for signing the `roomit_session` cookie
 - SMS provider credentials for production OTP delivery
 
+Database driver behavior:
+
+- Local URLs (`localhost` / `127.0.0.1`) use direct Postgres connections.
+- Non-local URLs (for example Neon on Vercel) use Neon serverless driver.
+- Do not wrap `DATABASE_URL` in quotes.
+
 If `DATABASE_URL` is missing, the app will still render, but live data features will fall back to empty states and protected mutations will fail safely.
 
 ## Local Development
@@ -61,6 +67,7 @@ Use [`create-admin.sql`](/home/johnlivingprooff/roomit/roomit/create-admin.sql) 
 ## Deployment Notes
 
 - Set `AUTH_SECRET` in production.
+- In Vercel, set `DATABASE_URL` to your Neon pooled connection string in Project Settings > Environment Variables.
 - Configure an SMS provider in production; OTP delivery fails closed without one.
 - Apply the database schema from `supabase-schema.sql`, then run `create-admin.sql` if you need an initial admin.
 - The local sandbox used during development surfaced an `EXDEV` `.next` rename issue during `next build`; validate the final build on the real deployment target as part of release verification.
